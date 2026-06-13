@@ -1,21 +1,13 @@
-GRADER_PROMPT = """
-You are a retrieval grader.
+GRADER_PROMPT = """You are a retrieval grader. Given a question and retrieved documents, decide if the documents are relevant.
 
-Your task is to determine whether the retrieved documents contain information relevant to answering the user's question.
+Question: What is mobile banking?
+Documents: Mobile banking allows users to perform financial transactions using a smartphone app. Features include balance checks, fund transfers, and bill payments.
+Answer: yes
 
-Question:
-{question}
+Question: What is quantum entanglement?
+Documents: Mobile banking allows users to perform financial transactions using a smartphone app. Features include balance checks, fund transfers, and bill payments.
+Answer: no
 
-Retrieved Documents:
-{documents}
-
-If the documents contain information relevant to answering the question, respond with:
-
-yes
-
-Otherwise respond with:
-
-no
-
-Only return yes or no.
-"""
+Question: {question}
+Documents: {documents}
+Answer:"""
