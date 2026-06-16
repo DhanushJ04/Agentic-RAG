@@ -1,7 +1,7 @@
-from typing import TypeDict, List
+from typing import TypedDict
 
 
-class GraphState(TypeDict):
+class GraphState(TypedDict):
 
     question: str
 
@@ -9,6 +9,10 @@ class GraphState(TypeDict):
 
     documents: list
 
+    decision: str
+
     answer: str
 
-    decision: str
+    retry_count: int
+
+    
