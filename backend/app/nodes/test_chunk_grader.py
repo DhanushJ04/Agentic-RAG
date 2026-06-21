@@ -19,7 +19,9 @@ for idx, doc in enumerate(documents, start=1):
         doc
     )
 
-    print(f"Chunk {idx}: {decision}")
+    print(f"\nChunk {idx}: {decision}")
+    print(f"Content:\n{doc.page_content[:400]}")
+    print("-" * 50)
 
     if decision == "yes":
         relevant_docs.append(doc)

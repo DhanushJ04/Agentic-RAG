@@ -18,4 +18,6 @@ def grade_chunk(question, chunk):
 
     decision = parse_yes_no(raw_output)
 
+    print(f"[DEBUG] Raw LLM output: {repr(raw_output)} -> Decision: {decision}")
+
     return decision
