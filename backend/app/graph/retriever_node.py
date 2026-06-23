@@ -5,7 +5,7 @@ def retrieve_node(state):
 
     retriever = get_retriever()
 
-    query = state["question"]
+    query = state.get("rewritten_query") or state["question"]
 
     documents = retriever.invoke(query)
 

@@ -1,25 +1,40 @@
-from app.llm.ollama_client import get_grader_llm
-from app.prompts.grader_prompt import GRADER_PROMPT
-from app.utils.grader_parser import parse_yes_no
+from app.nodes.chunk_grader import grade_chunk
 
 
 def grade_documents(question, documents):
+    """
+    Grade each document chunk individually against the question.
 
-    llm = get_grader_llm()
+    Returns "yes" if at least one chunk is relevant, "no" otherwise.
+    This per-chunk approach avoids confusing the small LLM with a
+    large concatenated context that mixes relevant and irrelevant text.
+    """
 
-    docs_text = "\n\n".join(
-        [doc.page_content for doc in documents]
-    )
+    question = question.strip()
 
-    prompt = GRADER_PROMPT.format(
-        question=question,
-        documents=docs_text
-    )
+    for doc in documents:
 
-    response = llm.invoke(prompt)
+        decision = grade_chunk(question, doc)
 
-    raw_output = response.content.strip().lower()
+        if decision == "yes":
+            return "yes"
 
-    decision = parse_yes_no(raw_output)
+    return "no"
 
-    return decision
+
+def filter_relevant_documents(question, documents):
+    """
+    Grade each chunk and return only the relevant ones.
+    """
+
+    question = question.strip()
+    relevant = []
+
+    for doc in documents:
+
+        decision = grade_chunk(question, doc)
+
+        if decision == "yes":
+            relevant.append(doc)
+
+    return relevant

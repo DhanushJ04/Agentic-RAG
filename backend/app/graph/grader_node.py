@@ -1,14 +1,17 @@
-from app.nodes.grader import grade_documents
+from app.nodes.grader import filter_relevant_documents
 
 
 def grade_node(state):
 
-    question = state["question"]
+    question = state.get("rewritten_query") or state["question"]
 
     documents = state["documents"]
 
-    decision = grade_documents(question, documents)
+    relevant_docs = filter_relevant_documents(question, documents)
+
+    decision = "yes" if relevant_docs else "no"
 
     return {
-        "decision": decision
+        "decision": decision,
+        "documents": relevant_docs if relevant_docs else documents
     }

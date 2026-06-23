@@ -31,6 +31,9 @@ st.set_page_config(
 if "processed_files" not in st.session_state:
     st.session_state.processed_files = []
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
 # ---------------------------------
 # Sidebar
 # ---------------------------------
@@ -91,56 +94,70 @@ else:
 # ---------------------------------
 st.title("🤖 Agentic CRAG System")
 
-query = st.text_input(
-    "Ask a Question"
-)
+for message in st.session_state.messages:
 
-# ---------------------------------
-# Ask Question
-# ---------------------------------
-if st.button("Ask"):
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
 
-    if query.strip():
+query = st.chat_input("Ask a Question")
 
-        with st.spinner("Thinking..."):
+if query:
 
-            result = graph.invoke(
-                {
-                    "question": query,
-                    "retry_count": 0
-                }
-            )
+    # -------------------------
+    # Store user message
+    # -------------------------
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": query
+        }
+    )
 
-        # -------------------------
-        # Answer
-        # -------------------------
-        st.subheader("Answer")
-        st.write(result["answer"])
+    with st.chat_message("user"):
+        st.write(query)
+
+    # -------------------------
+    # Generate Answer
+    # -------------------------
+    with st.spinner("Thinking..."):
+
+        result = graph.invoke(
+            {
+                "question": query,
+                "retry_count": 0
+            }
+        )
+
+    answer = result["answer"]
+
+    # -------------------------
+    # Store assistant message
+    # -------------------------
+    st.session_state.messages.append(
+        {
+            "role": "assistant",
+            "content": answer
+        }
+    )
+
+    with st.chat_message("assistant"):
+
+        st.write(answer)
 
         # -------------------------
         # Sources
         # -------------------------
         if result.get("documents"):
 
-            st.subheader("Sources")
+            st.markdown("**Sources**")
 
             shown_sources = set()
 
             for doc in result["documents"]:
 
-                source = Path(
-                    doc.metadata.get(
-                        "source",
-                        "Unknown"
-                    )
-                ).name
+                source = Path(doc.metadata.get("source", "Unknown")).name
 
-                page = (
-                    doc.metadata.get(
-                        "page",
-                        0
-                    ) + 1
-                )
+                page = (doc.metadata.get("page", 0) + 1)
 
                 key = f"{source}-{page}"
 
@@ -148,6 +165,4 @@ if st.button("Ask"):
 
                     shown_sources.add(key)
 
-                    st.write(
-                        f"📄 {source} - Page {page}"
-                    )
+                    st.write(f"📄 {source} - Page {page}")

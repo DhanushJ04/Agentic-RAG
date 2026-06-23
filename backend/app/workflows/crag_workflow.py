@@ -56,6 +56,15 @@ def run_crag(question):
     
     if second_decision == "yes":
         answer = generate_answer(rewritten_query, documents)
+
+        return {
+            "question": question,
+            "rewritten": True,
+            "rewritten_query": rewritten_query,
+            "answer": answer,
+            "documents": documents
+        }
+
     else:
         answer = ("I cound not find relevant information in the provided documents.")
 
