@@ -1,5 +1,5 @@
 from app.llm.ollama_client import get_grader_llm
-from app.prompts.grader_prompt import GRADER_PROMPT
+from app.prompts.chunk_grader_prompt import CHUNK_GRADER_PROMPT
 from app.utils.grader_parser import parse_yes_no
 
 
@@ -8,9 +8,9 @@ def grade_chunk(question, chunk):
     question = question.strip()
     llm = get_grader_llm()
 
-    prompt = GRADER_PROMPT.format(
+    prompt = CHUNK_GRADER_PROMPT.format(
         question=question,
-        documents=chunk.page_content
+        chunk=chunk.page_content
     )
 
     response = llm.invoke(prompt)

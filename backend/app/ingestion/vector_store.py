@@ -40,15 +40,6 @@ def create_vector_store():
 
     print("\nVector Store Created Successfully")
 
-    try:
-        if hasattr(vector_store, "_client") and hasattr(vector_store._client, "close"):
-            vector_store._client.close()
-    except Exception as e:
-        print(f"Error closing created vector store: {e}")
-
-    import gc
-    gc.collect()
-
     return vector_store
 
 

@@ -7,7 +7,7 @@ def route_after_grading(state):
     if decision == "yes":
         return "generate"
 
-    if retry_count >= 1:
+    if retry_count >= 2:
         return "not_found"
         
     return "rewrite"

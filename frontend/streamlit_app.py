@@ -121,9 +121,20 @@ if query:
     # -------------------------
     with st.spinner("Thinking..."):
 
+        history = ""
+
+        for message in st.session_state.messages[-4:]:
+            role = message["role"].capitalize()
+
+            history += (
+                f"{role}: "
+                f"{message['content']}\n"
+            )
+
         result = graph.invoke(
             {
                 "question": query,
+                "chat_history": history,
                 "retry_count": 0
             }
         )

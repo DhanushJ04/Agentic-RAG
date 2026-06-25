@@ -59,11 +59,22 @@ def parse_yes_no(response_text: str) -> str:
         return "no"
 
     # ── 4. Keyword frequency scan ─────────────────────────────────
-    yes_keywords = ["yes", "relevant", "related", "useful", "pertinent", "applicable"]
-    no_keywords = ["no", "irrelevant", "unrelated", "not relevant", "not related", "not useful"]
+    # Use word-boundary matching to avoid substring false positives
+    # (e.g., "not relevant" should NOT increment yes_count for "relevant")
+    
+    # Check for negation phrases first (higher priority)
+    negation_phrases = ["not relevant", "not related", "not useful", "not applicable",
+                        "irrelevant", "unrelated", "not pertinent"]
+    has_negation = any(phrase in text for phrase in negation_phrases)
+    
+    if has_negation:
+        return "no"
+    
+    yes_patterns = [r'\byes\b', r'\brelevant\b', r'\brelated\b', r'\buseful\b', r'\bpertinent\b', r'\bapplicable\b']
+    no_patterns = [r'\bno\b', r'\birrelevant\b', r'\bunrelated\b']
 
-    yes_count = sum(text.count(kw) for kw in yes_keywords)
-    no_count = sum(text.count(kw) for kw in no_keywords)
+    yes_count = sum(len(re.findall(p, text)) for p in yes_patterns)
+    no_count = sum(len(re.findall(p, text)) for p in no_patterns)
 
     if yes_count > no_count:
         return "yes"

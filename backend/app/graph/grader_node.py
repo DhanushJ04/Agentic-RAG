@@ -11,6 +11,10 @@ def grade_node(state):
 
     decision = "yes" if relevant_docs else "no"
 
+    print(f"\n[GRADER NODE] Question: {question}")
+    print(f"[GRADER NODE] Total docs: {len(documents)}, Relevant: {len(relevant_docs)}")
+    print(f"[GRADER NODE] Decision: {decision}")
+
     return {
         "decision": decision,
         "documents": relevant_docs if relevant_docs else documents
